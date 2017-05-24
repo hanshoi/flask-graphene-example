@@ -1,5 +1,5 @@
-from graphene import Schema, relay, ObjectType
-from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+from graphene import Schema, relay, ObjectType, List
+from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from . import models
 
@@ -17,7 +17,11 @@ class Employee(SQLAlchemyObjectType):
 
 
 class Query(ObjectType):
-    node = relay.Node.Field()
-    all_employees = SQLAlchemyConnectionField(Employee)
+    employees = List(Employee)
+
+    def resolve_employees(self, args, context, info):
+        query = Employee.get_query(context)
+        return query.all()
+
 
 schema = Schema(query=Query, types=[Department, Employee])
