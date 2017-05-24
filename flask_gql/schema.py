@@ -1,9 +1,7 @@
 from graphene import Schema, relay, ObjectType
-from graphene_sqlalhemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 
 from . import models
-
-schema = Schema()
 
 
 class Department(SQLAlchemyObjectType):
@@ -20,6 +18,6 @@ class Employee(SQLAlchemyObjectType):
 
 class Query(ObjectType):
     node = relay.Node.Field()
-    all_employees = SQLAlchemyConnectionField(models.Employee)
+    all_employees = SQLAlchemyConnectionField(Employee)
 
-schema.query = Query()
+schema = Schema(query=Query, types=[Department, Employee])
